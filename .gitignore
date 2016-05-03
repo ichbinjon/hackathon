@@ -1,0 +1,40 @@
+# Java
+
+*.class
+
+# Git
+*.orig
+
+# Gradle
+
+.gradle
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# Idea
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+
+.idea/gradle.xml
+.idea/libraries
+
+# Eclipse
+.classpath
+.project
+.settings
+./*/bin
+
+# Ubuntu
+*.swp
