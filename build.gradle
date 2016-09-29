@@ -29,6 +29,7 @@ apply plugin: "application"
 apply plugin: "com.github.johnrengelman.shadow"
 
 sourceCompatibility = 1.8
+mainClassName = "com.scottlogic.hackathon.client.Client"
 
 dependencies {
     testCompile group: "junit", name: "junit", version: "4.11"
@@ -46,6 +47,6 @@ run {
     args "Milestone1"
     args "-m"
     args "Easy"
-    args "com.team.ExampleBot"
+    args "com.contestantbots.team.ExampleBot"
     standardInput = System.in
 }
