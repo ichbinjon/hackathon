@@ -12,7 +12,7 @@ gradle-app.setting
 .gradletasknamecache
 
 # Idea
-.idea
+.idea/
 *.iml
 
 # Eclipse
