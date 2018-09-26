@@ -9,9 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExampleBot extends Bot {
+    private GameStateLogger gameStateLogger;
+
+    public ExampleBot() {
+        gameStateLogger = new GameStateLogger(getId());
+    }
+
     @Override
     public List<Move> makeMoves(final GameState gameState) {
-        GameStateLogger.process(getId(), gameState);
+        gameStateLogger.process(gameState);
         return new ArrayList<>();
     }
 

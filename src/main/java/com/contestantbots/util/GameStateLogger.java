@@ -12,129 +12,121 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameStateLogger {
-    private static UUID BOT_ID;
-    private static GameState GAME_STATE;
+    private UUID botId;
 
-    public static void process(UUID botId, GameState gameState) {
-        BOT_ID = botId;
-        GAME_STATE = gameState;
+    public GameStateLogger(UUID botId) {
+        this.botId = botId;
+    }
 
+    public void process(GameState gameState) {
         renderSeparator(true);
-        System.out.println("turn: " + gameState.getPhase());
-        System.out.println("map: " + gameState.getMap().getWidth() + " wide by " + gameState.getMap().getHeight() + " high");
+        System.out.println("turn: " + gameState.getPhase() + "\n" +
+                "map: " + gameState.getMap().getWidth() + " wide by " + gameState.getMap().getHeight() + " high");
         renderSeparator(true);
 
-        System.out.println("Out of Bounds");
+        StringBuilder outOfBoundsOutput = new StringBuilder("Out of Bounds");
         Set<Position> outOfBounds = gameState.getOutOfBoundsPositions();
         if (outOfBounds.isEmpty()) {
-            System.out.println("none visible");
+            outOfBoundsOutput.append(": none visible");
         } else {
-            outOfBounds.forEach(outOfBound -> System.out.println("WATER" + formatPosition(outOfBound)));
+            outOfBounds.forEach(outOfBound -> outOfBoundsOutput.append("\n").append(outOfBound));
         }
+        System.out.println(outOfBoundsOutput);
         renderSeparator(true);
 
-        renderSpawnPoints();
-        renderPlayers();
+        renderSpawnPoints(botId, gameState);
+        renderPlayers(botId, gameState);
 
-        System.out.println("Collectables");
+        StringBuilder collectablesOutput = new StringBuilder("Collectables");
         Set<Collectable> collectables = gameState.getCollectables();
         if (collectables.isEmpty()) {
-            System.out.println("none visible");
+            collectablesOutput.append(": none visible");
         } else {
-            collectables.forEach(collectable -> System.out.println(formatCollectable(collectable)));
+            collectables.forEach(collectable -> collectablesOutput.append("\n").append(collectable));
         }
+        System.out.println(collectablesOutput);
         renderSeparator(true);
         System.out.println();
         System.out.println();
     }
 
-    private static void renderSpawnPoints() {
-        List<SpawnPoint> friendlySpawnPoints = GAME_STATE.getSpawnPoints()
+    private void renderSpawnPoints(UUID botId, GameState gameState) {
+        List<SpawnPoint> friendlySpawnPoints = gameState.getSpawnPoints()
                 .stream()
-                .filter(spawnPoint -> spawnPoint.getOwner().equals(BOT_ID))
+                .filter(spawnPoint -> spawnPoint.getOwner().equals(botId))
                 .collect(Collectors.toList());
-        List<SpawnPoint> enemySpawnPoints = GAME_STATE.getSpawnPoints()
+        List<SpawnPoint> enemySpawnPoints = gameState.getSpawnPoints()
                 .stream()
-                .filter(spawnPoint -> !spawnPoint.getOwner().equals(BOT_ID))
+                .filter(spawnPoint -> !spawnPoint.getOwner().equals(botId))
                 .collect(Collectors.toList());
-        Set<SpawnPoint> removedSpawnPoints = GAME_STATE.getRemovedSpawnPoints();
+        Set<SpawnPoint> removedSpawnPoints = gameState.getRemovedSpawnPoints();
 
         System.out.println("SpawnPoints");
-        System.out.println("Friendly");
+        StringBuilder friendly = new StringBuilder("Friendly");
         if (friendlySpawnPoints.isEmpty()) {
-            System.out.println("none");
+            friendly.append(": none");
         } else {
-            friendlySpawnPoints.forEach(spawnPoint -> System.out.println(formatSpawnPoint(spawnPoint)));
+            friendlySpawnPoints.forEach(spawnPoint -> friendly.append("\n").append(spawnPoint));
         }
+        System.out.println(friendly);
         renderSeparator(false);
-        System.out.println("Enemy");
+        StringBuilder enemy = new StringBuilder("Enemy");
         if (enemySpawnPoints.isEmpty()) {
-            System.out.println("none visible");
+            enemy.append(": none visible");
         } else {
-            enemySpawnPoints.forEach(spawnPoint -> System.out.println(formatSpawnPoint(spawnPoint)));
+            enemySpawnPoints.forEach(spawnPoint -> enemy.append("\n").append(spawnPoint));
         }
+        System.out.println(enemy);
         renderSeparator(false);
-        System.out.println("Removed");
+        StringBuilder removed = new StringBuilder("Removed");
         if (removedSpawnPoints.isEmpty()) {
-            System.out.println("none");
+            removed.append(": none");
         } else {
-            removedSpawnPoints.forEach(spawnPoint -> System.out.println(formatSpawnPoint(spawnPoint)));
+            removedSpawnPoints.forEach(spawnPoint -> removed.append("\n").append(spawnPoint));
         }
+        System.out.println(removed);
         renderSeparator(true);
     }
 
-    private static void renderPlayers() {
-        List<Player> friendlyPlayers = GAME_STATE.getPlayers()
+    private void renderPlayers(UUID botId, GameState gameState) {
+        List<Player> friendlyPlayers = gameState.getPlayers()
                 .stream()
-                .filter(player -> player.getOwner().equals(BOT_ID))
+                .filter(player -> player.getOwner().equals(botId))
                 .collect(Collectors.toList());
-        List<Player> enemyPlayers = GAME_STATE.getPlayers()
+        List<Player> enemyPlayers = gameState.getPlayers()
                 .stream()
-                .filter(player -> !player.getOwner().equals(BOT_ID))
+                .filter(player -> !player.getOwner().equals(botId))
                 .collect(Collectors.toList());
-        Set<Player> removedPlayers = GAME_STATE.getRemovedPlayers();
+        Set<Player> removedPlayers = gameState.getRemovedPlayers();
 
         System.out.println("Players");
-        System.out.println("Friendly");
-        friendlyPlayers.forEach(player -> System.out.println(formatPlayer(player)));
+        StringBuilder friendly = new StringBuilder("Friendly");
+        friendlyPlayers.forEach(player -> friendly.append("\n").append(player));
+        System.out.println(friendly);
         renderSeparator(false);
-        System.out.println("Enemy");
+        StringBuilder enemy = new StringBuilder("Enemy");
         if (enemyPlayers.isEmpty()) {
-            System.out.println("none visible");
+            enemy.append(": none visible");
         } else {
-            enemyPlayers.forEach(player -> System.out.println(formatPlayer(player)));
+            enemyPlayers.forEach(player -> enemy.append("\n").append(player));
         }
+        System.out.println(enemy);
         renderSeparator(false);
-        System.out.println("Removed");
+        StringBuilder removed = new StringBuilder("Removed");
         if (removedPlayers.isEmpty()) {
-            System.out.println("none");
+            removed.append(": none");
         } else {
-            removedPlayers.forEach(player -> System.out.println(formatPlayer(player)));
+            removedPlayers.forEach(player -> removed.append("\n").append(player));
         }
+        System.out.println(removed);
         renderSeparator(true);
     }
 
-    private static void renderSeparator(boolean section) {
+    private void renderSeparator(boolean section) {
         if (section) {
-            System.out.println("===================================================");
+            System.out.println("====================================================================================================");
         } else {
-            System.out.println("---------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------------------------------");
         }
-    }
-
-    private static String formatCollectable(Collectable collectable) {
-        return "TYPE: " + collectable.getType() + formatPosition(collectable.getPosition());
-    }
-
-    private static String formatSpawnPoint(SpawnPoint spawnPoint) {
-        return "ID: " + spawnPoint.getId() + formatPosition(spawnPoint.getPosition());
-    }
-
-    private static String formatPlayer(Player player) {
-        return "ID: " + player.getId() + formatPosition(player.getPosition());
-    }
-
-    private static String formatPosition(Position position) {
-        return " @ (" + position.getX() + ", " + position.getY() + ")";
     }
 }
