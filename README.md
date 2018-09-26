@@ -1,3 +1,4 @@
+# Code Challenge - Contestant
 # Writing a Bot
 
 See com.contestantbots.team.ExampleBot, you should delete before submitting a bot.
