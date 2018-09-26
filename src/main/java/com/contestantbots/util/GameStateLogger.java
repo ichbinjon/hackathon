@@ -34,8 +34,8 @@ public class GameStateLogger {
         System.out.println(outOfBoundsOutput);
         renderSeparator(true);
 
-        renderSpawnPoints(botId, gameState);
-        renderPlayers(botId, gameState);
+        renderSpawnPoints(gameState);
+        renderPlayers(gameState);
 
         StringBuilder collectablesOutput = new StringBuilder("Collectables");
         Set<Collectable> collectables = gameState.getCollectables();
@@ -50,7 +50,7 @@ public class GameStateLogger {
         System.out.println();
     }
 
-    private void renderSpawnPoints(UUID botId, GameState gameState) {
+    private void renderSpawnPoints(GameState gameState) {
         List<SpawnPoint> friendlySpawnPoints = gameState.getSpawnPoints()
                 .stream()
                 .filter(spawnPoint -> spawnPoint.getOwner().equals(botId))
@@ -88,7 +88,7 @@ public class GameStateLogger {
         renderSeparator(true);
     }
 
-    private void renderPlayers(UUID botId, GameState gameState) {
+    private void renderPlayers(GameState gameState) {
         List<Player> friendlyPlayers = gameState.getPlayers()
                 .stream()
                 .filter(player -> player.getOwner().equals(botId))
