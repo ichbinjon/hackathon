@@ -1,0 +1,3 @@
+
+- avoid water
+- avoid collisions
