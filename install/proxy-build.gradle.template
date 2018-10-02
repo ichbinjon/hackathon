@@ -1,0 +1,54 @@
+group "com.scottlogic.hackathon-contestant"
+version "1.0-SNAPSHOT"
+
+
+repositories {
+    maven {
+        url "${maven_url}"
+    }
+    flatDir {
+        dirs "libs"
+    }
+}
+
+
+
+
+buildscript {
+    repositories {
+        maven {
+             url "${maven_url}"
+        }
+    }
+
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+    }
+}
+
+apply plugin: "java"
+apply plugin: "application"
+apply plugin: "com.github.johnrengelman.shadow"
+
+sourceCompatibility = 1.8
+mainClassName = "com.scottlogic.hackathon.client.Client"
+
+dependencies {
+    testCompile group: "junit", name: "junit", version: "4.11"
+    compile name: "game-1.0-SNAPSHOT"
+    runtime name: "client-1.0-SNAPSHOT-all"
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run {
+    main "com.scottlogic.hackathon.client.Client"
+    args "-b"
+    args "Milestone1"
+    args "-m"
+    args "Easy"
+    args "com.contestantbots.team.ExampleBot"
+    standardInput = System.in
+}
