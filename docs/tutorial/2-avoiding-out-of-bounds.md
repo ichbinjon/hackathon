@@ -33,8 +33,8 @@ this.gameState = gameState;
 ```
 
 That's the set-up complete, now you can make use of this new information to avoid a watery death for your players.  The
-current approach will be to make a player move randomly, so add a utility class to select a random direction from the 8
-available:
+current approach will be to make a player move randomly, so add a utility class to select a random direction from the
+eight available:
 ```
 public class RandomDirection {
     private static final Random INDEX = new Random();
@@ -118,7 +118,7 @@ java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar com.contestantbot
 ```
 
 This game should now last much longer, and might even end with the `TURN_LIMIT_REACHED` instead of `LONE_SURVIVOR` end
-condition, congratulation you've made it to the end of a game!  But look at all those collectable items that keep
+condition, congratulations you've made it to the end of a game!  But look at all those collectable items that keep
 appearing while your players just mill about around the spawn point.  The [next step](3-gathering-collectables.md) will
 be to start picking up the collectables and spawning more players.
 
