@@ -7,21 +7,21 @@ This step-by-step tutorial will walk you through the process of adding some usef
 you should start to win some of those games against the default bot and be able to take on some of the more sophisticated
 bots included in the starter kit.
 
-Along with the example bot the starter kit includes some helper functions that we'll make use of when adding the new
-features, see `DETAILS OF HELPER CLASS` for more details.
+Along with the example bot the starter kit includes some helper functions that you will make use of when adding the new
+features, see `com.scottlogic.hackathon.game.models.MapImpl` for more details.
 
 ### Step One
 Moving each player away from the spawn point will allow the next player to appear without eliminating both itself and
-the previous player, see [Adding player movement](1-adding-player-movement.md).
+the previous player, see [adding player movement](1-adding-player-movement.md).
 
 ### Step Two
 Now that your players are moving around the map your games will be lasting slightly longer.  Unfortunately, due to the
-naive approach that we adopted, your players are now marching north and into the water to drown, let's fix that and
-also ensure that they don't [collide with each other](2-avoiding-out-of-bounds.md).
+naive approach adopted, your players are now marching north and into the water to drown, let's fix that and also ensure
+that they don't [collide with each other](2-avoiding-out-of-bounds.md).
 
 ### Step Three
 So your players can now move around the map and don't drown or eliminate each other by accident, but what about all
-that food that keeps appearing, how do we [gather enough items](3-gathering-collectables.md) to ensure that your army
+that food that keeps appearing, how do you [gather enough items](3-gathering-collectables.md) to ensure that your army
 continues to grow?
 
 ### Step Four
