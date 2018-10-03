@@ -36,8 +36,12 @@ That's the set-up complete, now you can make use of this new information to avoi
 current approach will be to make a player move randomly, so add a utility class to select a random direction from the
 eight available:
 ```
-public class RandomDirection {
+public final class RandomDirection {
     private static final Random INDEX = new Random();
+
+    private RandomDirection() {
+        // prevent instantiation of utility class
+    }
 
     public static Direction get() {
         return Direction.values()[INDEX.nextInt(Direction.values().length)];
