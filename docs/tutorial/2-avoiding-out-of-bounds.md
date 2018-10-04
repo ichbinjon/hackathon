@@ -80,7 +80,7 @@ private Move doMove(final GameState gameState, final List<Position> nextPosition
 ```
 
 ### Testing
-Now that your players don't eliminate each other or drown you're ready to send your upgraded bot into battle, so
+Now that your players don't eliminate each other or drown you're ready to send your upgraded Bot into battle, so
 run another game:
 ```
 java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
@@ -91,7 +91,7 @@ condition, congratulations you've made it to the end of a game!  But look at all
 appearing while your players just mill about around the spawn point.  The [next step](3-gathering-collectables.md) will
 be to start picking up the collectables and spawning more players.
 
-## Bonus Questions
+## Extra Credit
 ### Random Directions
 Looking at the `doMove` method can you spot the deliberate flaw?  For instance, it might be possible, now that you have
 more players in the game, that there isn't an empty space available for a player to move to.  Can you think how else
@@ -99,7 +99,7 @@ the random selection code might 'fail'?
 
 ### Other Players
 It's possible, now that your players are moving further from the spawn point and living longer, that you'll come across
-players belonging to other bots.  What happens if you try to issue moves for a player that does not belong to your bot?
+players belonging to other Bots.  What happens if you try to issue moves for a player that does not belong to your bot?
 
 (*need to confirm that this will happen in future*)
 Being disqualified for issuing moves to the wrong players is not going to win you any games so you should update the

@@ -111,17 +111,17 @@ collectable have already been assigned, then a new assignment is added to the ma
 added to the list of collection moves.
 
 ### Testing
-Again you're ready to send your upgraded bot into battle, so run another game:
+Again you're ready to send your upgraded Bot into battle, so run another game:
 ```
 java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
 
-Your bot should now survive to the `TURN_LIMIT_REACHED` end condition every time, and if you're lucky you might even
-see the `LONE_SURVIVOR` end condition with just your bot remaining, congratulations you've just **won** a game! But
+Your Bot should now survive to the `TURN_LIMIT_REACHED` end condition every time, and if you're lucky you might even
+see the `LONE_SURVIVOR` end condition with just your Bot remaining, congratulations you've just **won** a game! But
 your players are now doing a very good impression of a swarm of bees, you can fix that by attempting to
 [explore the map](4-exploring-the-map.md).
 
-## Bonus Questions
+## Extra Credit
 ### Calculation Efficiency
 Does it make sense to recalculate the routes every time? Or is there some scope for improving the efficiency of the
 algorithm?

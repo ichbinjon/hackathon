@@ -135,17 +135,17 @@ moves.addAll(doExploreUnseen(gameState, assignedPlayerDestinations, nextPosition
 ```
 
 ### Testing
-Again you're ready to send your upgraded bot into battle, so run another game:
+Again you're ready to send your upgraded Bot into battle, so run another game:
 ```
 java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
 
-Your players should now be exploring the map and collecting all visible food, with the result that your bot will
+Your players should now be exploring the map and collecting all visible food, with the result that your Bot will
 almost certainly survive to the `TURN_LIMIT_REACHED` end condition every time. If you're lucky you might even manage
 to wander onto an enemy spawn point and end the game early, how about adding that as another goal before gathering
 collectables and exploring? See the [next step](5-destroying-spawn-points.md) for more details.
 
-## Bonus Questions
+## Extra Credit
 ### Available Players
 Reviewing your code you can probably spot a number of blocks of code which are virtually identical, e.g. obtaining a
 stream of unassigned players, perhaps that could be refactored into a utility method?
