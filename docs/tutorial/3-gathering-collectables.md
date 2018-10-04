@@ -6,10 +6,18 @@ players you can occupy more of the map and react to new collectable items before
 size of your army, etc. etc.
 
 ## Code Updates
+### One Collectable Per Player
+It makes sense to ensure that each player/collectable is only assigned once so add a `Map` to manage these assignments,
+again make it a local variable and pass it to the relevant methods:
+```
+Map<Player, Position> assignedPlayerDestinations = new HashMap<>();
+```
+
+### Collectables are Higher Priority
 Given the importance of growing your army let's assign players to gather collectables before assigning the remaining
 players to exploration duties.  Add the following method:
 ```
-private List<Move> doCollect() {
+private List<Move> doCollect(final GameState gameState, final Map<Player, Position> assignedPlayerDestinations, final List<Position> nextPositions) {
     List<Move> collectMoves = new ArrayList<>();
     System.out.println(collectMoves.size() + " players collecting");
     return collectMoves;
@@ -18,7 +26,7 @@ private List<Move> doCollect() {
 
 And then add a call to `doCollect` above the call to `doExplore`:
 ```
-moves.addAll(doCollect());
+moves.addAll(doCollect(gameState, assignedPlayerDestinations, nextPositions));
 ```
 
 ### Track Collectables and Players
@@ -41,7 +49,7 @@ utility method `map.distance(from, to)`.  Add the following code next:
 List<Route> collectableRoutes = new ArrayList<>();
 for (Position collectablePosition : collectablePositions) {
     for (Player player : players) {
-        int distance = map.distance(player.getPosition(), collectablePosition);
+        int distance = gameState.getMap().distance(player.getPosition(), collectablePosition);
         Route route = new Route(player, collectablePosition, distance);
         collectableRoutes.add(route);
     }
@@ -81,12 +89,6 @@ to order the routes based on distance:
 Collections.sort(collectableRoutes);
 ```
 
-### One Collectable Per Player
-It makes sense to ensure that each player/collectable is only assigned once so add a `Map` to manage these assignments:
-```
-private Map<Player, Position> assignedPlayerDestinations = new HashMap<>();
-```
-
 Now everything is in place so that you can work through the routes and assign your players accordingly using yet another
 utility method: `map.directionsTowards(from, to)`, this returns a `Stream` of `Direction`s that a player could make
 that will reduce the distance between the starting position and the destination.
@@ -94,8 +96,8 @@ that will reduce the distance between the starting position and the destination.
 for (Route route : collectableRoutes) {
     if (!assignedPlayerDestinations.containsKey(route.getPlayer())
             && !assignedPlayerDestinations.containsValue(route.getDestination())) {
-        Optional<Direction> direction = map.directionsTowards(route.getPlayer().getPosition(), route.getDestination()).findFirst();
-        if (direction.isPresent() && canMove(route.getPlayer(), direction.get())) {
+        Optional<Direction> direction = gameState.getMap().directionsTowards(route.getPlayer().getPosition(), route.getDestination()).findFirst();
+        if (direction.isPresent() && canMove(gameState, nextPositions, route.getPlayer(), direction.get())) {
             collectMoves.add(new MoveImpl(route.getPlayer().getId(), direction.get()));
             assignedPlayerDestinations.put(route.getPlayer(), route.getDestination());
         }

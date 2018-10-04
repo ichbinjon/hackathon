@@ -6,41 +6,50 @@ that another player is already occupying, with the result that you lose players.
 some logic to prevent these situations from happening.
 
 ## Code Updates
+### Track Next Positions
+You need a list of the positions that your players will occupy on the next turn so that you can avoid collisions, add
+it as a local variable in the `makeMoves` method and then pass it through to each method call:
+```
+List<Position> nextPositions = new ArrayList<>();
+```
+
+and replace:
+```
+moves.addAll(doExplore(gameState));
+```
+
+with:
+```
+moves.addAll(doExplore(gameState, nextPositions));
+```
+
+and also:
+```
+private List<Move> doExplore(final GameState gameState) {
+```
+
+with:
+```
+private List<Move> doExplore(final GameState gameState, final List<Position> nextPositions) {
+```
+
 ### Check For Out of Bounds
 The `GameState` object passed to the `initialise` and `makeMoves` methods contains a range of useful information about
 the state of the map on a given turn, for example which visible positions are water, or out of bounds, and also a
-map-related utility class `GameMap`.  So you need to maintain references to these objects to avoid the need to pass
-them to every utility method.
-*refactor game.Map once we update code*
-```
-private GameState gameState;
-private com.scottlogic.hackathon.game.Map map;
-```
+map-related utility class `GameMap`.  This will be passed through to the relevant methods to avoid keeping a reference
+to what is essentially a single use object.
 
-Because the methods provided by the `Map` class only reference features of the map that do not change on a turn-by-turn
-basis you can cache that object in the `initialise` method.
+First you need to check where a player would end up if it moved in a given direction, so add a `canMove` method which
+makes use of a utility method `map.getNeighbour(position, direction)` to get the next position (taking account of the
+way that the map wraps at the top/bottom and left/right) and then checks whether that position will already be occupied
+or if it is out of bounds.
 ```
-@Override
-public void initialise(GameState gameState) {
-    map = gameState.getMap();
-}
-```
-
-But the `GameState` contains information relevant for the current turn and needs to be kept up-to-date, so add the
-following to the top of the `makeMoves` method:
-```
-this.gameState = gameState;
-```
-
-That's the set-up complete, now you can make use of this new information to avoid a watery death for your players. Next
-you need to check where a player would end up if it moved in that direction, so add a `canMove` method which makes use
-of a utility method `map.getNeighbour(position, direction)` to get the next position (taking account of the way that
-the map wraps at the top/bottom and left/right) and then checks whether that position is out of bounds.
-```
-private boolean canMove(Player player, Direction direction) {
-    Set<Position> outOfBounds = this.gameState.getOutOfBoundsPositions();
-    Position newPosition = map.getNeighbour(player.getPosition(), direction);
-    if (!outOfBounds.contains(newPosition)) {
+private boolean canMove(final GameState gameState, final List<Position> nextPositions, final Player player, final Direction direction) {
+    Set<Position> outOfBounds = gameState.getOutOfBoundsPositions();
+    Position newPosition = gameState.getMap().getNeighbour(player.getPosition(), direction);
+    if (!nextPositions.contains(newPosition)
+        && !outOfBounds.contains(newPosition)) {
+        nextPositions.add(newPosition);
         return true;
     } else {
         return false;
@@ -55,50 +64,24 @@ Now you're ready to make use of these methods, so replace the following line in 
 
 with:
 ```
-.map(player -> doMove(player))
+.map(player -> doMove(gameState, nextPositions, player))
 ```
 
 The current approach will be to make a player move randomly, you'll do that in the `doMove` method which encapsulates
 the movement logic for a player:
 ```
-private Move doMove(Player player) {
+private Move doMove(final GameState gameState, final List<Position> nextPositions, final Player player) {
     Direction direction;
     do {
         direction = Direction.random();
-    } while (!canMove(player, direction));
+    } while (!canMove(gameState, nextPositions, player, direction));
     return new MoveImpl(player.getId(), direction);
 }
 ```
 
-So your players shouldn't drown but you haven't addressed the issue of your players attempting to occupy the same
-position, let's fix that next.
-
-### Track Next Positions
-You need a list of the positions that your players will occupy on the next turn:
-```
-private List<Position> nextPositions = new ArrayList<>();
-```
-
-And because you're not interested in the last turn you should clear this list at the start of the current turn so add
-the following to the start of the `makeMoves` method:
-```
-nextPositions.clear();
-```
-
-The final step is to check this list in the `canMove` method and also add to the list as your players are assigned
-moves:
-```
-if (!nextPositions.contains(newPosition)
-        && !outOfBounds.contains(newPosition)) {
-    nextPositions.add(newPosition);
-    return true;
-} else {
-    return false;
-}
-```
-
 ### Testing
-Again you're ready to send your upgraded bot into battle, so run another game:
+Now that your players don't eliminate each other or drown you're ready to send your upgraded bot into battle, so
+run another game:
 ```
 java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
@@ -124,12 +107,12 @@ stream of players to filter out any that do not belong to your bot:
 ```
 moves.addAll(gameState.getPlayers().stream()
         .filter(player -> isMyPlayer(player))
-        .map(player -> doMove(player))
+        .map(player -> doMove(gameState, nextPositions, player))
         .collect(Collectors.toList());
 ```
 
 ```
-private boolean isMyPlayer(Player player) {
+private boolean isMyPlayer(final Player player) {
     return player.getOwner().equals(getId());
 }
 ```

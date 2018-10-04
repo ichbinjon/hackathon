@@ -14,11 +14,11 @@ this is a secondary priority to gathering collectables because you don't want to
 First of all let's refactor the route generation and assignment code into helper methods as this will avoid duplicated
 code once you start adding routes to unseen positions:
 ```
-private List<Route> generateRoutes(Set<Player> players, Set<Position> destinations) {
+private List<Route> generateRoutes(final GameState gameState, Set<Player> players, Set<Position> destinations) {
     List<Route> routes = new ArrayList<>();
     for (Position destination : destinations) {
         for (Player player : players) {
-            int distance = map.distance(player.getPosition(), destination);
+            int distance = gameState.getMap().distance(player.getPosition(), destination);
             Route route = new Route(player, destination, distance);
             routes.add(route);
         }
@@ -27,12 +27,12 @@ private List<Route> generateRoutes(Set<Player> players, Set<Position> destinatio
 }
 ```
 ```
-private List<Move> assignRoutes(List<Route> routes) {
+private List<Move> assignRoutes(final GameState gameState, final Map<Player, Position> assignedPlayerDestinations, final List<Position> nextPositions, List<Route> routes) {
     return routes.stream()
             .filter(route -> !assignedPlayerDestinations.containsKey(route.getPlayer())&& !assignedPlayerDestinations.containsValue(route.getDestination()))
             .map(route -> {
-                Optional<Direction> direction = map.directionsTowards(route.getPlayer().getPosition(), route.getDestination()).findFirst();
-                if (direction.isPresent() && canMove(route.getPlayer(), direction.get())) {
+                Optional<Direction> direction = gameState.getMap().directionsTowards(route.getPlayer().getPosition(), route.getDestination()).findFirst();
+                if (direction.isPresent() && canMove(gameState, nextPositions, route.getPlayer(), direction.get())) {
                     assignedPlayerDestinations.put(route.getPlayer(), route.getDestination());
                     return new MoveImpl(route.getPlayer().getId(), direction.get());
                 }
@@ -45,14 +45,15 @@ private List<Move> assignRoutes(List<Route> routes) {
 
 Now you can make use of the new methods in `doCollect`:
 ```
-List<Route> collectableRoutes = generateRoutes(players, collectablePositions);
+List<Route> collectableRoutes = generateRoutes(gameState, players, collectablePositions);
 ```
 ```
-collectMoves.addAll(assignRoutes(collectableRoutes));
+collectMoves.addAll(assignRoutes(gameState, assignedPlayerDestinations, nextPositions, collectableRoutes));
 ```
 
 ### Track Unseen Positions
-Add a set to manage the unseen positions in the map:
+Add a set to manage the unseen positions in the map, this is state that you need to track through the duration of a
+game so add it as an instance variable:
 ```
 private Set<Position> unseenPositions = new HashSet<>();
 ```
@@ -60,8 +61,8 @@ private Set<Position> unseenPositions = new HashSet<>();
 And add the following to the `initialise` method as this only needs to be done once:
 ```
 // add all positions to the unseen set
-for (int x = 0; x < map.getWidth(); x++) {
-    for (int y = 0; y < map.getHeight(); y++) {
+for (int x = 0; x < gameState.getMap().getWidth(); x++) {
+    for (int y = 0; y < gameState.getMap().getHeight(); y++) {
         unseenPositions.add(new Position(x, y));
     }
 }
@@ -72,14 +73,14 @@ Before processing your moves, you need to update the set of unseen positions to 
 current move. The distance that a player can see is not provided as part of the game or map state, let's 'guess' a
 distance and then add methods to calculate the positions that your players can see and remove them from the tracked set:
 ```
-private void updateUnseenLocations() {
+private void updateUnseenLocations(final GameState gameState) {
     // assume players can 'see' a distance of 5 squares
     int visibleDistance = 5;
     final Set<Position> visiblePositions = gameState.getPlayers()
             .stream()
             .filter(player -> isMyPlayer(player))
             .map(player -> player.getPosition())
-            .flatMap(playerPosition -> getSurroundingPositions(playerPosition, visibleDistance))
+            .flatMap(playerPosition -> getSurroundingPositions(gameState, playerPosition, visibleDistance))
             .distinct()
             .collect(Collectors.toSet());
 
@@ -90,14 +91,12 @@ private void updateUnseenLocations() {
 
 As you can see above, the initial guess is 5, does this make much difference to the performance of your bot?
 ```
-private Stream<Position> getSurroundingPositions(Position position, int distance, boolean includeOrigin) {
+private Stream<Position> getSurroundingPositions(final GameState gameState, final Position position, final int distance) {
     Stream<Position> positions = Arrays.stream(Direction.values())
             .flatMap(direction -> IntStream.rangeClosed(1, distance)
-                    .mapToObj(currentDistance -> map.getRelativePosition(position, direction, currentDistance)));
+                    .mapToObj(currentDistance -> gameState.getMap().getRelativePosition(position, direction, currentDistance)));
 
-    if (includeOrigin) {
-        positions = Stream.concat(Stream.of(position), positions);
-    }
+    positions = Stream.concat(Stream.of(position), positions);
 
     return positions;
 }
@@ -105,14 +104,14 @@ private Stream<Position> getSurroundingPositions(Position position, int distance
 
 And finally call the update method from `makeMoves`:
 ```
-updateUnseenLocations();
+updateUnseenLocations(gameState);
 ```
 
 ### Assign Players to Explore
 All that remains to be done is to add a `doExploreUnseen` method which will generate routes for each available player
 to an unseen position and then assign them in much the same way as you did for collectables.
 ```
-private List<Move> doExploreUnseen() {
+private List<Move> doExploreUnseen(final GameState gameState, final Map<Player, Position> assignedPlayerDestinations, final List<Position> nextPositions) {
     List<Move> exploreMoves = new ArrayList<>();
 
     Set<Player> players = gameState.getPlayers().stream()
@@ -120,10 +119,10 @@ private List<Move> doExploreUnseen() {
             .filter(player -> !assignedPlayerDestinations.containsKey(player))
             .collect(Collectors.toSet());
 
-    List<Route> unseenRoutes = generateRoutes(players, unseenPositions);
+    List<Route> unseenRoutes = generateRoutes(gameState, players, unseenPositions);
 
     Collections.sort(unseenRoutes);
-    exploreMoves.addAll(assignRoutes(unseenRoutes));
+    exploreMoves.addAll(assignRoutes(gameState, assignedPlayerDestinations, nextPositions, unseenRoutes));
 
     System.out.println(exploreMoves.size() + " players exploring unseen");
     return exploreMoves;
@@ -132,7 +131,7 @@ private List<Move> doExploreUnseen() {
 
 Finally, you need to add a call to that method after the `doCollect` call:
 ```
-moves.addAll(doExploreUnseen());
+moves.addAll(doExploreUnseen(gameState, assignedPlayerDestinations, nextPositions));
 ```
 
 ### Testing

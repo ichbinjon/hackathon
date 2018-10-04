@@ -39,7 +39,7 @@ with:
 ```
 List<Move> moves = new ArrayList<>();
 
-moves.addAll(doExplore());
+moves.addAll(doExplore(gameState));
 
 return moves;
 ```
@@ -47,7 +47,7 @@ return moves;
 And then you need to implement the `doExplore` method, to start with your players will just move `North` to avoid being
 eliminated by any newly spawned player.
 ```
-private List<Move> doExplore() {
+private List<Move> doExplore(final GameState gameState) {
     List<Move> exploreMoves = new ArrayList<>();
 
     exploreMoves.addAll(gameState.getPlayers().stream()
