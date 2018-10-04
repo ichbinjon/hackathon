@@ -57,8 +57,8 @@ restrictions on the compiled code:
 - the jar file must be < 20MB
 - the com.contestantbots.team package should only contain classes that extend `com.scottlogic.hackathon.game.Bot`
 - any helper or utility classes should either be
-  - inner classes, or
-  - in a separate package
+  - inner classes of your Bot, or
+  - not have a public constructor
 - your bot should take no more than 5 seconds to calculate the moves otherwise it will be timed out
 - you can include more than one bot class in the uploaded jar file to allow you to test different strategies, however
 only one bot can be active at any given time

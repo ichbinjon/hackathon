@@ -62,7 +62,7 @@ private List<Move> doExplore() {
 ### Testing
 Now you're ready to send your upgraded bot into battle, so run another game:
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar com.contestantbots.team.ExampleBot
+java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
 
 The game should now have lasted 21 phases, but still end with the `LONE_SURVIVOR` end condition as all your players

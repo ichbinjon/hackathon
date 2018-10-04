@@ -32,26 +32,10 @@ following to the top of the `makeMoves` method:
 this.gameState = gameState;
 ```
 
-That's the set-up complete, now you can make use of this new information to avoid a watery death for your players.  The
-current approach will be to make a player move randomly, so add a utility class to select a random direction from the
-eight available:
-```
-public final class RandomDirection {
-    private static final Random INDEX = new Random();
-
-    private RandomDirection() {
-        // prevent instantiation of utility class
-    }
-
-    public static Direction get() {
-        return Direction.values()[INDEX.nextInt(Direction.values().length)];
-    }
-}
-```
-
-Next you need to check where a player would end up if it moved in that direction, so add a `canMove` method which
-makes use of a utility method `map.getNeighbour(position, direction)` to get the next position (taking account of the
-way that the map wraps at the top/bottom and left/right) and then checks whether that position is out of bounds.
+That's the set-up complete, now you can make use of this new information to avoid a watery death for your players. Next
+you need to check where a player would end up if it moved in that direction, so add a `canMove` method which makes use
+of a utility method `map.getNeighbour(position, direction)` to get the next position (taking account of the way that
+the map wraps at the top/bottom and left/right) and then checks whether that position is out of bounds.
 ```
 private boolean canMove(Player player, Direction direction) {
     Set<Position> outOfBounds = this.gameState.getOutOfBoundsPositions();
@@ -74,17 +58,15 @@ with:
 .map(player -> doMove(player))
 ```
 
-This calls the `doMove` method which encapsulates the movement logic for a player:
+The current approach will be to make a player move randomly, you'll do that in the `doMove` method which encapsulates
+the movement logic for a player:
 ```
 private Move doMove(Player player) {
-    Move move = null;
-    while (move == null) {
-        Direction direction = RandomDirection.get();
-        if (canMove(player, direction)) {
-            move = new MoveImpl(player.getId(), direction);
-        }
-    }
-    return move;
+    Direction direction;
+    do {
+        direction = Direction.random();
+    } while (!canMove(player, direction));
+    return new MoveImpl(player.getId(), direction);
 }
 ```
 
@@ -118,7 +100,7 @@ if (!nextPositions.contains(newPosition)
 ### Testing
 Again you're ready to send your upgraded bot into battle, so run another game:
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar com.contestantbots.team.ExampleBot
+java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
 
 This game should now last much longer, and might even end with the `TURN_LIMIT_REACHED` instead of `LONE_SURVIVOR` end

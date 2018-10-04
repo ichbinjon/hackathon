@@ -88,7 +88,7 @@ private Map<Player, Position> assignedPlayerDestinations = new HashMap<>();
 ```
 
 Now everything is in place so that you can work through the routes and assign your players accordingly using yet another
-utility methods: `map.directionsTowards(from, to)`, this returns a `Stream` of `Direction`s that a player could make
+utility method: `map.directionsTowards(from, to)`, this returns a `Stream` of `Direction`s that a player could make
 that will reduce the distance between the starting position and the destination.
 ```
 for (Route route : collectableRoutes) {
@@ -111,7 +111,7 @@ added to the list of collection moves.
 ### Testing
 Again you're ready to send your upgraded bot into battle, so run another game:
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar com.contestantbots.team.ExampleBot
+java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```
 
 Your bot should now survive to the `TURN_LIMIT_REACHED` end condition every time, and if you're lucky you might even
