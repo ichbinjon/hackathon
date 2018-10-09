@@ -1,22 +1,39 @@
 group "com.scottlogic.hackathon-contestant"
 version "1.0-SNAPSHOT"
 
+task printProps {
+    doFirst {
+        println mavenProxyUrl
+    }
+}
+
+
 repositories {
-    mavenCentral()
+    if(project.hasProperty('mavenProxyUrl')){
+        maven {
+            url mavenProxyUrl
+        }
+    } else{
+        mavenCentral()
+    }
+
     flatDir {
         dirs "libs"
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = "2.9"
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
+
 
 
 buildscript {
     repositories {
-        jcenter()
+        if(project.hasProperty('mavenProxyUrl')) {
+            maven {
+                url mavenProxyUrl
+            }
+        }else {
+            jcenter()
+        }
     }
 
     dependencies {

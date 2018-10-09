@@ -17,10 +17,10 @@ if not "%1"=="" (
 
 set WRAPPER_PROPS_IN="install\gradle-wrapper.properties.template"
 set WRAPPER_PROPS_OUT="gradle\wrapper\gradle-wrapper.properties"
-set PROXY_BUILD_GRADLE_IN="install\proxy-build.gradle.template"
-set BUILD_GRADLE="build.gradle"
+set GRADLE_PROPS_IN="install\gradle.properties.template"
+set GRADLE_PROPS_OUT="gradle.properties"
 
-if %REPO%=="" (
+if "%REPO%"=="" (
   call :configure_default_access
 ) else (  
   call :configure_proxy_access
@@ -40,10 +40,10 @@ exit /B %ERRORLEVEL%
     endlocal)
   )>%WRAPPER_PROPS_OUT%
    
-  rem type "%WRAPPER_PROPS_OUT%"  
+  rem type "%WRAPPER_PROPS_OUT%"
+  findstr /V "mavenProxyUrl" %GRADLE_PROPS_OUT% > %GRADLE_PROPS_OUT%
   echo Gradle will be installed from %GRADLE_DIST_URL% and Maven will use maven central
 
-  if exist "%BUILD_GRADLE%.bak" COPY %BUILD_GRADLE%.bak "%BUILD_GRADLE%"
 exit /B 0
 
 
@@ -59,20 +59,19 @@ exit /B 0
   )>%WRAPPER_PROPS_OUT%
    
   rem type "%WRAPPER_PROPS_OUT%"  
-  
-  if not exist "%BUILD_GRADLE%.bak" COPY %BUILD_GRADLE% "%BUILD_GRADLE%.bak"
+
   
   set MAVEN_URL=%REPO%/maven-public/
 
-  (for /f "delims=" %%a in ('findstr "^" "%PROXY_BUILD_GRADLE_IN%"') do (
+  (for /f "delims=" %%a in ('findstr "^" "%GRADLE_PROPS_IN%"') do (
     set "s=%%a"
     setlocal enabledelayedexpansion
     set "s=!s:${maven_url}=%MAVEN_URL%!"
     echo !s!
     endlocal)
-  )>%BUILD_GRADLE%
+  )>%GRADLE_PROPS_OUT%
 
-  rem type "%BUILD_GRADLE%"  
+  rem type "%GRADLE_PROPS_OUT%"
 
   echo Gradle will be installed from %GRADLE_DIST_URL% and Maven will be proxied to %MAVEN_URL%
 exit /B 0
