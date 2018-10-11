@@ -20,7 +20,7 @@ Unix shell:
 ./install.sh -r <PATH_TO_MAVEN_REPO>
 ```
 
-For example if the repository manager was running on host: WS01190 port 8081 then (on Wondows):
+For example if the repository manager was running on host: WS01190 port 8081 then (on Windows):
 ```batch
 install -r http://WS01190:8081/repository
 ```
