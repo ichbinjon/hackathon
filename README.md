@@ -1,47 +1,61 @@
 # Code Challenge - Contestant
-## Set-up
-These instructions will test that your environment is correctly configured and
-that all the required tools are available.
+## Installing
 
-### Building
-From a command prompt in the root directory of the project:
-```
-gradlew :shadowJar
-```
-This should trigger the build process and create an executable jar in `build\libs`.
+Configure internet settings used to build the project. 
+This allows us to set a proxy that will be used to download Gradle and Maven dependencies used in the project.
 
-### Running
-From a command prompt in the root directory of the project:
-```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar com.contestantbots.team.ExampleBot
+Windows command prompt:
+```batch
+install -r <PATH_TO_MAVEN_REPO>
 ```
 
-This should run a game between the initial bot that you can find in `src\main\java\com\contestantbots\team\ExampleBot.java`
-and the default bot.  Once this completes you have the option to step through the game turn-by-turn, or exit the simulator.
-
-The following parameters can be passed when running the client to control the game format:
-- -m|map MapName
-  - map to use [VeryEasy, Easy, Medium, LargeMedium, Hard]
-  - default: Easy
-- -b|bot Bot [Bot, [Bot]]
-  - bot(s) to play against [Default, Milestone1, Milestone2, Milestone3]
-  - default: Milestone1
-- -c|className ClassName
-  - fully specified class name of your bot, i.e. include the package
-
-Alternatively you can run the following command to get the latest usage information:
+Unix shell:
+```sh
+./install.sh -r <PATH_TO_MAVEN_REPO>
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar
+
+For example if the repository manager was running on host: WS01190 port 8081 then (on Windows):
+```batch
+install -r http://WS01190:8081/repository
+```
+
+## Building & Running
+
+The repository includes a pre-compiled game simulator application.
+It can be run from either the command line, or your IDE.
+
+After each phase of the game, the application prints an ASCII-art representation of the game's current state to the
+console. You can review this before hitting `Enter` to play the next phase.
+Since the printed state takes up quite a few lines in the console,
+you may find that your IDE's output console can't be made big enough to properly review it,
+in which case you may prefer to build and run the game from a command-line terminal.   
+
+### From your IDE
+
+There's a `void main(...)` method in the `ExampleBot` class. You can use that to run or debug a game simulation from
+within your IDE.
+
+### From your command line terminal
+
+Open a command line terminal in the root folder of this project and run one of the following commands.
+
+Windows command prompt:
+```batch
+gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
+```
+
+Unix shell:
+```sh
+./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
 ### Game Output
 The turn-by-turn game output is rendered as an ascii-art representation of the board with the following key:
-```
-O: spawn point
-X: out of bounds
-+: collectable
-*: player
-```
+ - `A`-`D`: spawn point
+ - `a`-`d`: player
+ - `X`: out of bounds
+ - `+`: collectable
+
 With the initial bot you should see a very short game consisting of 7 phases ending due to the `LONE_SURVIVOR` end
 condition.  The turn-by-turn replay should show 8 players appearing from one spawn point (don't get your hopes up, these
 belong to the default bot), and none appearing from the other spawn point.  This is because the initial bot does not
