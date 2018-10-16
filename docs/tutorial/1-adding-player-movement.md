@@ -60,7 +60,7 @@ private List<Move> doExplore(final GameState gameState) {
 ```
 
 ### Testing
-Now you're ready to send your upgraded bot into battle, so run another game:
+Now you're ready to send your upgraded Bot into battle, so run another game:
 ```
 java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
 ```

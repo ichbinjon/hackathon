@@ -68,7 +68,6 @@ for (int x = 0; x < gameState.getMap().getWidth(); x++) {
 }
 ```
 
-*make the existing utility methods for this public?*
 Before processing your moves, you need to update the set of unseen positions to remove those that are visible on the
 current move. The distance that a player can see is not provided as part of the game or map state, let's 'guess' a
 distance and then add methods to calculate the positions that your players can see and remove them from the tracked set:
@@ -89,7 +88,10 @@ private void updateUnseenLocations(final GameState gameState) {
 }
 ```
 
-As you can see above, the initial guess is 5, does this make much difference to the performance of your bot?
+As you can see above, the initial guess is 5, does this make much difference to the performance of your bot? A closer
+analysis of the algorithm will reveal that the visibility logic (which is identical to the logic used in the game
+engine) only considers direct line of sight locations, how could this affect the behaviour of your Bot, or the
+information provided by the engine? *Hint: consider how a player may approach a target location.*
 ```
 private Stream<Position> getSurroundingPositions(final GameState gameState, final Position position, final int distance) {
     Stream<Position> positions = Arrays.stream(Direction.values())

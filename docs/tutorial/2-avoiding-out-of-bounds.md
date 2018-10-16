@@ -36,8 +36,8 @@ private List<Move> doExplore(final GameState gameState, final List<Position> nex
 ### Check For Out of Bounds
 The `GameState` object passed to the `initialise` and `makeMoves` methods contains a range of useful information about
 the state of the map on a given turn, for example which visible positions are water, or out of bounds, and also a
-map-related utility class `GameMap`.  This will be passed through to the relevant methods to avoid keeping a reference
-to what is essentially a single use object.
+map-related utility class `Map`.  This will be passed through to the relevant methods to avoid keeping a reference to
+what is essentially a single use object.
 
 First you need to check where a player would end up if it moved in a given direction, so add a `canMove` method which
 makes use of a utility method `map.getNeighbour(position, direction)` to get the next position (taking account of the
