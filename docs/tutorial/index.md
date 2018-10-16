@@ -39,7 +39,7 @@ This tutorial should have improved the capabilities of your Bot to give it a fig
 more that could be done, here are a few ideas:
 
 - the routing algorithm is very basic and assumes your players can travel over water, perhaps some form of path finding
-would work better in more complex maps
+would work better in more complex maps, see for instance the `com.scottlogic.hackathon.game.Graph` utility class
 - the battle rules are such that your players can eliminate enemy players without taking losses, you could add some
 logic to ensure you outnumber your enemies
 - be careful that you don't leave your own spawn point undefended, if it gets destroyed then you cannot spawn more
