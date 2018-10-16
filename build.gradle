@@ -1,3 +1,8 @@
+plugins {
+    id "java"
+    id "application"
+}
+
 group "com.scottlogic.hackathon-contestant"
 version "1.0-SNAPSHOT"
 
@@ -6,7 +11,6 @@ task printProps {
         println mavenProxyUrl
     }
 }
-
 
 repositories {
     if(project.hasProperty('mavenProxyUrl')){
@@ -22,48 +26,15 @@ repositories {
     }
 }
 
-
-
-
-buildscript {
-    repositories {
-        if(project.hasProperty('mavenProxyUrl')) {
-            maven {
-                url mavenProxyUrl
-            }
-        }else {
-            jcenter()
-        }
-    }
-
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
-    }
-}
-
-apply plugin: "java"
-apply plugin: "application"
-apply plugin: "com.github.johnrengelman.shadow"
-
-sourceCompatibility = 1.8
-mainClassName = "com.scottlogic.hackathon.client.Client"
-
 dependencies {
     testCompile group: "junit", name: "junit", version: "4.11"
     compile name: "game-1.0-SNAPSHOT"
-    runtime name: "client-1.0-SNAPSHOT-all"
+    compile name: "client-1.0-SNAPSHOT-all"
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
+sourceCompatibility = 1.9
+mainClassName = project.hasProperty('mainClass') ? project.mainClass : 'com.contestantbots.team.ExampleBot'
 
 run {
-    main "com.scottlogic.hackathon.client.Client"
-    args "-b"
-    args "Milestone1"
-    args "-m"
-    args "Easy"
-    args "com.contestantbots.team.ExampleBot"
     standardInput = System.in
 }
