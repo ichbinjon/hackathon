@@ -8,7 +8,7 @@ you should start to win some of those games against the default Bot and be able 
 Bots included in the starter kit.
 
 Along with the example Bot the starter kit includes some helper functions that you will make use of when adding the new
-features, see `com.scottlogic.hackathon.game.models.MapImpl` for more details.
+features, see `com.scottlogic.hackathon.game.Map` for more details.
 
 ### Step One
 Moving each player away from the spawn point will allow the next player to appear without eliminating both itself and

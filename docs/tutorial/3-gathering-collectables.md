@@ -89,6 +89,8 @@ to order the routes based on distance:
 Collections.sort(collectableRoutes);
 ```
 
+**N.B.** A more sophisticated `Route` implementation can be found here: `com.scottlogic.hackathon.game.Route`.
+
 Now everything is in place so that you can work through the routes and assign your players accordingly using yet another
 utility method: `map.directionsTowards(from, to)`, this returns a `Stream` of `Direction`s that a player could make
 that will reduce the distance between the starting position and the destination.
