@@ -1,23 +1,55 @@
 # Code Challenge - Contestant
-## Installing
+## Setup
+### 1 Ensure Java is installed and set-up
+You need a JDK installed of version 9 or later. If you don't have this, you can download one from the same machine this
+site is running on. In your web browser, navigate to `http://<host>:8081/repository/java/jdk-windows.zip` or
+`http://<host>:8081/repository/java/jdk-linux.tgz`, where `<host>` is the same host name as this Git server is on.
+Extract the downloaded archive onto your hard drive.
 
-Configure internet settings used to build the project. 
-This allows us to set a proxy that will be used to download Gradle and Maven dependencies used in the project.
+Make sure you also have your `JAVA_HOME` environment variable set to the path of the correct JDK folder.
+In Windows, search for 'env' in your Start Menu, then follow the prompts. In Linux, edit your `~/.profile`
+or `~/.bashrc` file appropriately.
+
+### 1a (Optional) Install Git
+It may help to have Git installed. On Windows, download Git for Windows [here](https://gitforwindows.org/).
+This also gives you access to a Linux-style Bash shell terminal called Git Bash.
+
+### 2 Download this project
+If you have Git installed, you can clone the repository to your local machine using the clone URL above.
+Alternatively, there's also a link above to download the repository as a zip or tar archive.
+
+A third option, which may make working with your team mates easier, is to register a username on this git server,
+then fork the project and clone it from there. That will allow you to share code with your team mates by pushing
+commits back up to your forked project.
+
+### 3 Setup build proxy paths
+
+Configure internet settings used to build this project.  This allows us to set a proxy that will be used to download
+Gradle and Maven dependencies used when building the project.
 
 Windows command prompt:
 ```batch
-install -r <PATH_TO_MAVEN_REPO>
+install -r http://<host>:8081/repository
 ```
 
 Unix shell:
 ```sh
-./install.sh -r <PATH_TO_MAVEN_REPO>
+./install.sh -r http://<host>:8081/repository
 ```
 
-For example if the repository manager was running on host: WS01190 port 8081 then (on Windows):
+In both of the above, `<host>` is the same hostname as this site is on.
+For example if the URL of this web page is `http://WS01161:3000/ScottLogic/hackathon-contestant`, then (on Windows):
 ```batch
-install -r http://WS01190:8081/repository
+install -r http://WS01161:8081/repository
 ```
+
+### 4 (Optional) Install and import into a Java IDE
+It will probably be easier to do development in a Java IDE - ideally one that supports importing Gradle projects, like
+Eclipse or IntelliJ IDEA. We recommend IntelliJ. Make sure you've set your JDK to one with at least version 9 in
+your IDE settings.
+
+In IntelliJ if you open the repostory's root folder as a new project, it should detect Gradle and start the import
+wizard automatically. In Eclipse, choose `File -> Import... -> Gradle`.
 
 ## Building & Running
 
