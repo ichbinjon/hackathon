@@ -1,21 +1,23 @@
 # Gathering Collectables
 
 ## The Plan
-You need to gather collectable items so that you can spawn new players to increase the size of your army, with more
-players you can occupy more of the map and react to new collectable items before your opponents thus increasing the
-size of your army, etc. etc.
+You need to gather collectable items in order to spawn new players to increase the size of your army; with more
+players you can occupy more of the map and reach new collectable items before your opponents, thus increasing the
+size of your army and (hopefully) eventually eliminating all opponents.
 
 ## Code Updates
 ### One Collectable Per Player
-It makes sense to ensure that each player/collectable is only assigned once so add a `Map` to manage these assignments,
-again make it a local variable and pass it to the relevant methods:
+It makes sense to ensure that each collectable is only assigned to one player, so add a `Map` to manage these assignments,
+again making it a local variable and passing it to the relevant methods:
+
 ```
 Map<Player, Position> assignedPlayerDestinations = new HashMap<>();
 ```
 
 ### Collectables are Higher Priority
-Given the importance of growing your army let's assign players to gather collectables before assigning the remaining
-players to exploration duties.  Add the following method:
+Given the importance of growing your army, let's assign players to gather collectables before assigning the remaining
+players to exploration duties. Add the following method:
+
 ```
 private List<Move> doCollect(final GameState gameState, final Map<Player, Position> assignedPlayerDestinations, final List<Position> nextPositions) {
     List<Move> collectMoves = new ArrayList<>();
@@ -25,6 +27,7 @@ private List<Move> doCollect(final GameState gameState, final Map<Player, Positi
 ```
 
 And then add a call to `doCollect` above the call to `doExplore`:
+
 ```
 moves.addAll(doCollect(gameState, assignedPlayerDestinations, nextPositions));
 ```
@@ -32,6 +35,7 @@ moves.addAll(doCollect(gameState, assignedPlayerDestinations, nextPositions));
 ### Track Collectables and Players
 First things first, you need to know where the collectables are and also a list of your players, so let's add some code
 to the `doCollect` method, after the list initialisation, for those two tasks:
+
 ```
 Set<Position> collectablePositions = gameState.getCollectables().stream()
         .map(collectable -> collectable.getPosition())
@@ -45,6 +49,7 @@ Set<Player> players = gameState.getPlayers().stream()
 Next you want to assign a player to gather each collectable, it makes sense to assign the player closest to each
 collectable to that task so you need to calculate the distances from all players to all collectables using another
 utility method `map.distance(from, to)`.  Add the following code next:
+
 ```
 List<Route> collectableRoutes = new ArrayList<>();
 for (Position collectablePosition : collectablePositions) {
@@ -57,6 +62,7 @@ for (Position collectablePosition : collectablePositions) {
 ```
 
 The `Route` data structure is given below:
+
 ```
 public class Route implements Comparable<Route> {
     private final Player player;
@@ -85,6 +91,7 @@ public class Route implements Comparable<Route> {
 
 This class implements the `Comparable` interface which means you can make use of the `Collections.sort` utility method
 to order the routes based on distance:
+
 ```
 Collections.sort(collectableRoutes);
 ```
@@ -92,6 +99,7 @@ Collections.sort(collectableRoutes);
 Now everything is in place so that you can work through the routes and assign your players accordingly using yet another
 utility method: `map.directionsTowards(from, to)`, this returns a `Stream` of `Direction`s that a player could make
 that will reduce the distance between the starting position and the destination.
+
 ```
 for (Route route : collectableRoutes) {
     if (!assignedPlayerDestinations.containsKey(route.getPlayer())
@@ -111,13 +119,22 @@ collectable have already been assigned, then a new assignment is added to the ma
 added to the list of collection moves.
 
 ### Testing
-Again you're ready to send your upgraded Bot into battle, so run another game:
+Again you're ready to send your upgraded Bot into battle, so run another game.
+
+Windows command prompt:
+
+```batch
+gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
+
+Unix shell:
+
+```sh
+./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
 Your Bot should now survive to the `TURN_LIMIT_REACHED` end condition every time, and if you're lucky you might even
-see the `LONE_SURVIVOR` end condition with just your Bot remaining, congratulations you've just **won** a game! But
+see the `LONE_SURVIVOR` end condition with just your Bot remaining: congratulations, you've just **won** a game! But
 your players are now doing a very good impression of a swarm of bees, you can fix that by attempting to
 [explore the map](4-exploring-the-map.md).
 
