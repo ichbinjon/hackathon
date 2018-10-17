@@ -79,7 +79,7 @@ Unix shell:
 ./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
-The game should now have lasted 21 phases, but still end with the `LONE_SURVIVOR` end condition as all your players
+The game should now have lasted 22 phases, but still end with the `LONE_SURVIVOR` end condition as all your players
 march in a neat line directly northwards and straight into the nearby water!
 
 So the [next step](2-avoiding-out-of-bounds.md) will be to ensure that your players do not play follow the leader to a
