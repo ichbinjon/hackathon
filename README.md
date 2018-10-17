@@ -29,7 +29,7 @@ Gradle and Maven dependencies used when building the project.
 
 Windows command prompt:
 ```batch
-install -r http://<host>:8081/repositoy
+install -r http://<host>:8081/repository
 ```
 
 Unix shell:
@@ -45,8 +45,8 @@ install -r http://WS01161:8081/repository
 
 ### 4 (Optional) Install and import into a Java IDE
 It will probably be easier to do development in a Java IDE - ideally one that supports importing Gradle projects, like
-Eclipse or IntelliJ IDEA. We recommend IntelliJ. Make sure you've set your JDK to one of the appropriate version in
-you IDE settings.
+Eclipse or IntelliJ IDEA. We recommend IntelliJ. Make sure you've set your JDK to one of at least version 9 in
+your IDE settings.
 
 In IntelliJ if you open the repostory's root folder as a new project, it should detect Gradle and start the import
 wizard automatically. In Eclipse, choose `File -> Import... -> Gradle`.
