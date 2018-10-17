@@ -10,11 +10,13 @@ The `GameState` only includes information on the items that your players can see
 spawn point you need to store the position so your Bot doesn't 'forget' where it is if the player moves away from the
 the immediate vicinity of the spawn point or is killed.  This is state that you need to track across the duration of a
 game so add an instance variable to track the positions:
+
 ```
 private Set<Position> enemySpawnPointPositions = new HashSet<>();
 ```
 
 Now you need to update the set at the start of each turn, soo add the following method:
+
 ```
 private void updateEnemySpawnPointLocations(final GameState gameState) {
     enemySpawnPointPositions.addAll(gameState.getSpawnPoints().stream()
@@ -31,12 +33,14 @@ private void updateEnemySpawnPointLocations(final GameState gameState) {
 
 Notice how the code removes spawn points that have been reported as destroyed so that your players don't continue to
 attack a spawn point that's no longer there!  Next call this at the start of `makeMoves`:
+
 ```
 updateEnemySpawnPointLocations(gameState);
 ```
 
 ### Attack
 Now the important bit, let's assign players to attack the known spawn points:
+
 ```
 private List<Move> doAttack(final GameState gameState, final Map<Player, Position> assignedPlayerDestinations,
                             final List<Position> nextPositions) {
@@ -59,14 +63,24 @@ private List<Move> doAttack(final GameState gameState, final Map<Player, Positio
 ```
 
 And finally add these new moves to the list returned from `makeMoves`:
+
 ```
 moves.addAll(doAttack(gameState, assignedPlayerDestinations, nextPositions));
 ```
 
 ### Testing
-Again you're ready to send your newly aggressive Bot into battle, so run another game:
+Again you're ready to send your newly aggressive Bot into battle, so run another game as before:
+
+Windows command prompt:
+
+```batch
+gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
-java -jar build\libs\hackathon-contestant-1.0-SNAPSHOT-all.jar <fully_qualified_bot_class_name>
+
+Unix shell:
+
+```sh
+./gradlew run -P mainClass=<your_bot_class_fully_qualified_name>
 ```
 
 Your Bot should now be destroying the enemy spawn point along the way to a `LONE_SURVIVOR` end condition which
