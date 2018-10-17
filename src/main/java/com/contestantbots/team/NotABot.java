@@ -55,7 +55,7 @@ class Route implements Comparable<Route> {
 
 
 
-public class ExampleBot extends Bot {
+public class NotABot extends Bot {
     private final GameStateLogger gameStateLogger;
     private java.util.Map<Player, Position> assignedPlayerDestinations = new HashMap<>();
     private Set<Position> unseenPositions = new HashSet<>();
@@ -63,8 +63,8 @@ public class ExampleBot extends Bot {
 
 
 
-    public ExampleBot() {
-        super("Example Bot");
+    public NotABot() {
+        super("Not a Bot");
         gameStateLogger = new GameStateLogger(getId());
 
 
@@ -164,6 +164,7 @@ public class ExampleBot extends Bot {
 
         System.out.println(collectMoves.size() + " players collecting");
 
+//        System.out.println(gameState.getCollectables() + " IS THE COLLECTABLES!!!");
 
         return collectMoves;
     }
@@ -179,6 +180,9 @@ public class ExampleBot extends Bot {
         updateEnemySpawnPointLocations(gameState);
 
 
+
+        moves.addAll(doAttack(gameState, assignedPlayerDestinations, nextPositions));
+
         moves.addAll(doCollect(gameState, assignedPlayerDestinations, nextPositions));
 
         moves.addAll(doExploreUnseen(gameState, assignedPlayerDestinations, nextPositions));
@@ -189,8 +193,6 @@ public class ExampleBot extends Bot {
                 .map(player -> doMove(gameState, nextPositions, player))
                 .collect(Collectors.toList()));
 
-
-        moves.addAll(doAttack(gameState, assignedPlayerDestinations, nextPositions));
 
 
         return moves;
@@ -229,6 +231,7 @@ public class ExampleBot extends Bot {
         List<Route> unseenRoutes = generateRoutes(gameState, players, unseenPositions);
 
         Collections.sort(unseenRoutes);
+        System.out.println(unseenRoutes + "UNSEEN ROUTES!!");
         exploreMoves.addAll(assignRoutes(gameState, assignedPlayerDestinations, nextPositions, unseenRoutes));
 
         System.out.println(exploreMoves.size() + " players exploring unseen");
@@ -249,6 +252,27 @@ public class ExampleBot extends Bot {
         }
     }
 
+    private List<Move> doExplore3(final GameState gameState) {
+        List<Move> exploreMoves = new ArrayList<>();
+
+        exploreMoves.addAll(gameState.getPlayers().stream()
+                .map(player -> new MoveImpl(player.getId(), Direction.NORTH))
+                .collect(Collectors.toList()));
+
+        System.out.println(exploreMoves.size() + " players exploring");
+        return exploreMoves;
+    }
+
+    private List<Move> doExplore2(final GameState gameState) {
+        List<Move> exploreMoves = new ArrayList<>();
+
+        exploreMoves.addAll(gameState.getPlayers().stream()
+                .map(player -> new MoveImpl(player.getId(), Direction.WEST))
+                .collect(Collectors.toList()));
+
+        System.out.println(exploreMoves.size() + " players exploring");
+        return exploreMoves;
+    }
 
 
     private List<Move> doExplore(final GameState gameState, final List<Position> nextPositions) {
@@ -265,6 +289,7 @@ public class ExampleBot extends Bot {
 
     private Move doMove(final GameState gameState, final List<Position> nextPositions, final Player player) {
         Direction direction;
+//        System.out.println("SPAWN POINTS ----"+ gameState.getSpawnPoints());
         do {
             direction = Direction.random();
         } while (!canMove(gameState, nextPositions, player, direction));
@@ -292,8 +317,8 @@ public class ExampleBot extends Bot {
                 Make sure you only have ONE line uncommented below.
                  */
                 "--map",
-//                    "VeryEasy",
-                    "Easy",
+                    "VeryEasy",
+//                    "Easy",
 //                    "Medium",
 //                    "LargeMedium",
 //                    "Hard",
@@ -307,8 +332,8 @@ public class ExampleBot extends Bot {
                  */
                 "--bot",
 //                    "Default", // Players move in random directions
-                    "Milestone1", // Players just try to stay out of trouble
-//                    "Milestone2", // Some players gather collectables, some attack enemy players, and some attack enemy spawn points
+//                    "Milestone1", // Players just try to stay out of trouble
+                    "Milestone2", // Some players gather collectables, some attack enemy players, and some attack enemy spawn points
 //                    "Milestone3", // Strategy dynamically updates based on the current state of the game
 //                    "FastExpansion", // Advanced dynamic strategy where players work together
 
@@ -321,10 +346,10 @@ public class ExampleBot extends Bot {
 
                 Comment this line out if you want to check that your bot is running fast enough.
                  */
-                "--debug",
+//                "--debug",
 
                 // Use this class as the 'main' Bot
-                "--className", ExampleBot.class.getName()
+                "--className", NotABot.class.getName()
         };
 
         Client.main(args);
