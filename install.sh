@@ -34,9 +34,6 @@ function configure_proxy_access(){
 
 if [ -z ${REPO+x} ]; then configure_default_access; else configure_proxy_access; fi
 
-echo Executing: gradlew clean shadowJar
-(./gradlew clean shadowJar)
-
 echo "REPO: ${REPO}"
 
 

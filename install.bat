@@ -25,8 +25,6 @@ if "%REPO%"=="" (
 ) else (  
   call :configure_proxy_access
 )
-echo Executing: gradlew clean shadowJar
-(gradlew clean shadowJar)
 exit /B %ERRORLEVEL% 
 
 :configure_default_access
