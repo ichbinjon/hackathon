@@ -29,7 +29,7 @@ public class ExampleBot extends Bot {
      * After each turn, the current state of the game will be printed as an ASCII-art representation in the console.
      * You can study the map before hitting 'Enter' to play the next phase.
      */
-    public static void main(String ignored[]) {
+    public static void main(String ignored[]) throws Exception {
 
         final String[] args = new String[]{
                 /*
@@ -56,7 +56,7 @@ public class ExampleBot extends Bot {
 //                    "Default", // Players move in random directions
                     "Milestone1", // Players just try to stay out of trouble
 //                    "Milestone2", // Some players gather collectables, some attack enemy players, and some attack enemy spawn points
-//                    "Milestone3", // Strategy dynamically updates based on the current state of the game
+                    "Milestone3", // Strategy dynamically updates based on the current state of the game
 //                    "FastExpansion", // Advanced dynamic strategy where players work together
 
                 /*
